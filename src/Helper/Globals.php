@@ -14,10 +14,10 @@ abstract class Globals
         return $matches[1];
     }
 
-    public function getMethod(array $headers = []) : string
+    public static function getMethod(array $headers = []) : string
     {
         $method = strtoupper($_SERVER['REQUEST_METHOD']);
-        
+
         if ($method != 'post') {
             return $method;
         }
@@ -138,7 +138,7 @@ abstract class Globals
             $tmpNames = (array) $input['tmp_name'];
             $errors   = (array) $input['error'];
             $sizes    = (array) $input['size'];
-            
+
             foreach ($names as $key => $name) {
                 $files[] = [
                     'inputName' => $inputName,
