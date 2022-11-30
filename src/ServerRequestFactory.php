@@ -20,13 +20,12 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 
         return new ServerRequest('1.0', [], null, '', $method, $uri = null, [], [], [], null, []);
     }
-    
-    public static function createFromGlobals() : ServerRequestInterface
+
+    public function createFromGlobals() : ServerRequestInterface
     {
         $protocolVersion = Globals::getProtocolVersion();
         $headers         = Globals::getHeaders();
         $body            = new Stream(fopen('php://input', 'r'));
-
         $target          = Globals::getPath();
         $method          = Globals::getMethod($headers);
         $uri             = UriFactory::createFromGlobals();
