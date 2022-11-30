@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:adinan-cenci/psr-7.git",
-                "reference": "b4749f9a6e6120d76f69ce8d2c1ba7940e32df72"
+                "reference": "b24f07dc801f21fd1b12f315e408f28f575c1822"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/adinan-cenci/psr-7/zipball/b4749f9a6e6120d76f69ce8d2c1ba7940e32df72",
-                "reference": "b4749f9a6e6120d76f69ce8d2c1ba7940e32df72",
+                "url": "https://api.github.com/repos/adinan-cenci/psr-7/zipball/b24f07dc801f21fd1b12f315e408f28f575c1822",
+                "reference": "b24f07dc801f21fd1b12f315e408f28f575c1822",
                 "shasum": ""
             },
             "require": {
@@ -50,7 +50,7 @@
                 "source": "https://github.com/adinan-cenci/psr-7/tree/master",
                 "issues": "https://github.com/adinan-cenci/psr-7/issues"
             },
-            "time": "2022-11-12T12:37:37+00:00"
+            "time": "2022-11-28T21:40:29+00:00"
         },
         {
             "name": "psr/http-factory",
@@ -300,12 +300,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "2f1fd784fe5560675722a1e5cbbcece5f43bf3a0"
+                "reference": "1df465cd901414affcf9a04ef041cf3aedad73b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/2f1fd784fe5560675722a1e5cbbcece5f43bf3a0",
-                "reference": "2f1fd784fe5560675722a1e5cbbcece5f43bf3a0",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/1df465cd901414affcf9a04ef041cf3aedad73b1",
+                "reference": "1df465cd901414affcf9a04ef041cf3aedad73b1",
                 "shasum": ""
             },
             "require": {
@@ -349,7 +349,7 @@
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
                 "source": "https://github.com/nikic/PHP-Parser/tree/4.x"
             },
-            "time": "2022-09-10T20:41:13+00:00"
+            "time": "2022-11-13T15:33:17+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -476,12 +476,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "858b0f26c8b12ed8f9bf1a610e1470af6950c5da"
+                "reference": "5797d42f4735077b43816ec6a6fdfa7a1ad551c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/858b0f26c8b12ed8f9bf1a610e1470af6950c5da",
-                "reference": "858b0f26c8b12ed8f9bf1a610e1470af6950c5da",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/5797d42f4735077b43816ec6a6fdfa7a1ad551c1",
+                "reference": "5797d42f4735077b43816ec6a6fdfa7a1ad551c1",
                 "shasum": ""
             },
             "require": {
@@ -545,7 +545,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-11-07T16:54:48+00:00"
+            "time": "2022-11-30T19:01:11+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -794,12 +794,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "2854bdd8a1e8bd3831ee3622c6f0951684d08490"
+                "reference": "a4246d5352b16c87547505d1af713cf348e3646f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/2854bdd8a1e8bd3831ee3622c6f0951684d08490",
-                "reference": "2854bdd8a1e8bd3831ee3622c6f0951684d08490",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a4246d5352b16c87547505d1af713cf348e3646f",
+                "reference": "a4246d5352b16c87547505d1af713cf348e3646f",
                 "shasum": ""
             },
             "require": {
@@ -888,7 +888,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-11-09T08:31:26+00:00"
+            "time": "2022-11-30T19:34:14+00:00"
         },
         {
             "name": "sebastian/cli-parser",
