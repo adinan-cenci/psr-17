@@ -39,19 +39,19 @@ class ResponseFactory implements ResponseFactoryInterface
             throw new \InvalidArgumentException('Location must be a string or an instance of Psr\Http\Message\UriInterface');
         }
 
-        $response = $this->createResponse($code, $response);
+        $response = $this->createResponse($code, $reasonPhrase);
         $response = $response->withHeader('Location', $location);
         return $response;
     }
 
     public function movedPermanently($location) : ResponseInterface 
     {
-        return $this->moved(301, 'Moved Permanently');
+        return $this->moved(301, 'Moved Permanently', $location);
     }
 
     public function movedTemporarily($location) : ResponseInterface 
     {
-        return $this->moved(302, 'Moved Temporarily');
+        return $this->moved(302, 'Moved Temporarily', $location);
     }
 
     /**
