@@ -72,6 +72,18 @@ abstract class Globals
 
     public static function getScheme() : string 
     {
+        $schema = self::getServerVar('HTTP_X_FORWARDED_PROTO');
+
+        if ($schema) {
+            return $schema;
+        }
+
+        $https = self::getServerVar('HTTPS');
+
+        if ($https == 'on') {
+            return 'https';
+        }
+
         return self::getServerVar('REQUEST_SCHEME', 'http');
     }
 
