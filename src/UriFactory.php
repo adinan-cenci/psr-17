@@ -14,7 +14,7 @@ class UriFactory implements UriFactoryInterface
         return Uri::parseString($uri);
     }
 
-    public static function createFromGlobals() : UriInterface
+    public function createFromGlobals() : UriInterface
     {
         $scheme   = Globals::getScheme();
         $password = Globals::getPassword();
