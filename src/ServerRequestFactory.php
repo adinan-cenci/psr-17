@@ -54,7 +54,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 
     public static function parseBody(StreamInterface $body, $contentType = null) 
     {
-        if ($contentType == null) {
+        if (in_array($contentType, ['application/x-www-form-urlencoded', 'multipart/form-data', null])) {
             return $_POST;
         }
 
