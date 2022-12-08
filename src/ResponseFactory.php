@@ -77,6 +77,29 @@ class ResponseFactory implements ResponseFactoryInterface
         return $this->response(404, 'Not Found', $body);
     }
 
+    /**
+     * 500 ...
+     */
+    public function internalServerError($body = null) 
+    {
+        return $this->response(500, 'Internal Server Error', $body);
+    }
+
+    public function notImplemented($body = null) 
+    {
+        return $this->response(501, 'Not Implemented', $body);
+    }
+
+    public function badGateway($body = null) 
+    {
+        return $this->response(502, 'Bad Gateway', $body);
+    }
+
+    public function serviceUnavailable($body = null) 
+    {
+        return $this->response(503, 'Service Unavailable', $body);
+    }
+
     protected function response(int $code, string $reasonPhrase, $body = null) 
     {
         $response = $this->createResponse($code, $reasonPhrase);
