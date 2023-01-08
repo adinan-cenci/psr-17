@@ -2,7 +2,8 @@
     "name": "adinancenci/psr-17",
     "description": "An implementation of the PSR-17 specification.", 
     "type": "library", 
-    "keywords": ["http", "psr", "psr-17"], 
+    "keywords": ["http", "psr", "psr-17"],
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "AdinanCenci\\Psr17\\": "src/",
