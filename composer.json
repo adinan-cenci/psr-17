@@ -3,7 +3,6 @@
     "description": "An implementation of the PSR-17 specification.", 
     "type": "library", 
     "keywords": ["http", "psr", "psr-17"], 
-    "minimum-stability": "dev", 
     "autoload": {
         "psr-4": {
             "AdinanCenci\\Psr17\\": "src/",
@@ -11,7 +10,7 @@
         }
     },
     "require": {
-        "adinancenci/psr-7": "*",
+        "adinancenci/psr-7": "^1.0.0",
         "psr/http-factory": "1.0.x-dev"
     },
     "require-dev": {
