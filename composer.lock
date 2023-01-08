@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d99ea5dd211789d3cb01f801d3dcfb22",
+    "content-hash": "5c6263ffc5261314cc9f46c893faffb7",
     "packages": [
         {
-            "name": "adinancenci/psr-7",
-            "version": "v1.0.0",
+            "name": "adinan-cenci/psr-7",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/adinan-cenci/psr-7.git",
-                "reference": "af3d7b4f69be0ba8fa9953383396de907ac17f4a"
+                "reference": "c0f4be9a98f46a2a5077ac28ad4d970ef61d4a91"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/adinan-cenci/psr-7/zipball/af3d7b4f69be0ba8fa9953383396de907ac17f4a",
-                "reference": "af3d7b4f69be0ba8fa9953383396de907ac17f4a",
+                "url": "https://api.github.com/repos/adinan-cenci/psr-7/zipball/c0f4be9a98f46a2a5077ac28ad4d970ef61d4a91",
+                "reference": "c0f4be9a98f46a2a5077ac28ad4d970ef61d4a91",
                 "shasum": ""
             },
             "require": {
@@ -39,6 +39,9 @@
                     "./vendor/bin/phpunit tests"
                 ]
             },
+            "license": [
+                "MIT"
+            ],
             "description": "An implementation of the PSR-7 specification.",
             "keywords": [
                 "http",
@@ -46,10 +49,10 @@
                 "psr-7"
             ],
             "support": {
-                "source": "https://github.com/adinan-cenci/psr-7/tree/v1.0.0",
+                "source": "https://github.com/adinan-cenci/psr-7/tree/v1.0.2",
                 "issues": "https://github.com/adinan-cenci/psr-7/issues"
             },
-            "time": "2023-01-03T22:49:50+00:00"
+            "time": "2023-01-08T12:29:37+00:00"
         },
         {
             "name": "psr/http-factory",
