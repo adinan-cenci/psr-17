@@ -28,7 +28,7 @@ abstract class Globals
 
         $overriden = strtoupper($headers['x-http-method-override']);
 
-        if (in_array($overriden, array('PUT', 'DELETE', 'PATCH'))) {
+        if (in_array($overriden, ['PUT', 'DELETE', 'PATCH', 'HEAD'])) {
             $method = $overriden;
         }
 
