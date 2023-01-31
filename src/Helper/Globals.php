@@ -18,7 +18,7 @@ abstract class Globals
     {
         $method = strtoupper($_SERVER['REQUEST_METHOD']);
 
-        if ($method != 'post') {
+        if ($method != 'POST') {
             return $method;
         }
 
