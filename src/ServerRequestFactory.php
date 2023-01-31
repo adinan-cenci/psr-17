@@ -52,9 +52,18 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         );
     }
 
+    public static function getMime(string $contentType) : string
+    {
+        return preg_match('#^([^;]+)#', $contentType, $matches)
+            ? trim(strtolower($matches[1]))
+            : $contentType;
+    }
+
     public static function parseBody(StreamInterface $body, $contentType = null) 
     {
-        if (in_array($contentType, ['application/x-www-form-urlencoded', 'multipart/form-data', null])) {
+        $mime = self::getMime((string) $contentType);
+
+        if (in_array($mime, ['application/x-www-form-urlencoded', 'multipart/form-data', ''])) {
             return $_POST;
         }
 
