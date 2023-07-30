@@ -35,6 +35,19 @@ abstract class Globals
         return $method;
     }
 
+    public static function getHttpMethodOverride(array $headers = []) 
+    {
+        if (! isset($headers['x-http-method-override'])) {
+            return null;
+        }
+
+        $overriden = strtoupper($headers['x-http-method-override']);
+
+        return in_array($overriden, ['PUT', 'DELETE', 'PATCH', 'HEAD'])
+            ? $overriden
+            : null;
+    }
+
     public static function getHeaders() : array
     {
         $headers = array();
