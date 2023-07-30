@@ -21,19 +21,6 @@ abstract class Globals
             : 'GET';
     }
 
-    public static function getHttpMethodOverride(array $headers = []) 
-    {
-        if (! isset($headers['x-http-method-override'])) {
-            return null;
-        }
-
-        $overriden = strtoupper($headers['x-http-method-override']);
-
-        return in_array($overriden, ['PUT', 'DELETE', 'PATCH', 'HEAD'])
-            ? $overriden
-            : null;
-    }
-
     public static function getHeaders() : array
     {
         $headers = array();
@@ -144,25 +131,42 @@ abstract class Globals
         $files = [];
 
         foreach ($_FILES as $inputName => $input) {
-            $names    = (array) $input['name'];
-            $types    = (array) $input['type'];
-            $tmpNames = (array) $input['tmp_name'];
-            $errors   = (array) $input['error'];
-            $sizes    = (array) $input['size'];
+            $paths = is_array($_FILES[$inputName]['name']) 
+                ? Arrays::getAllPaths($_FILES[$inputName]['name'])
+                : [$inputName];
 
-            foreach ($names as $key => $name) {
-                $files[] = [
-                    'inputName' => $inputName,
-                    'name'      => $name, 
-                    'type'      => $types[$key],
-                    'tmpName'   => $tmpNames[$key],
-                    'error'     => $errors[$key],
-                    'size'      => $sizes[$key],
-                ];
+            foreach ($paths as $path) {
+                $files[] = self::getUploadedFile($inputName, $path);
             }
         }
 
         return $files;
+    }
+
+    protected static function getUploadedFile(string $inputName, $path) : array
+    {
+        if (is_array($path)) {
+            $fullPath = [$inputName];
+            array_splice($fullPath, 1, count($path), $path);
+
+            return [
+                'path'      => $fullPath,
+                'name'      => Arrays::getValueAtEndOfPath($_FILES[$inputName]['name'], $path), 
+                'type'      => Arrays::getValueAtEndOfPath($_FILES[$inputName]['type'], $path), 
+                'tmpName'   => Arrays::getValueAtEndOfPath($_FILES[$inputName]['tmp_name'], $path), 
+                'error'     => Arrays::getValueAtEndOfPath($_FILES[$inputName]['error'], $path), 
+                'size'      => Arrays::getValueAtEndOfPath($_FILES[$inputName]['size'], $path)
+            ];
+        }
+
+        return [
+            'path'      => [$path],
+            'name'      => $_FILES[$inputName]['name'], 
+            'type'      => $_FILES[$inputName]['type'], 
+            'tmpName'   => $_FILES[$inputName]['tmp_name'], 
+            'error'     => $_FILES[$inputName]['error'], 
+            'size'      => $_FILES[$inputName]['size']
+        ];
     }
 
     protected static function getServerVar($name, $default = '') 
