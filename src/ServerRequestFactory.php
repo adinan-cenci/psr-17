@@ -59,9 +59,31 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
             : $contentType;
     }
 
+    public static function breakContentType(string $contentType) : array
+    {
+        $parts = [];
+
+        $parts['mime'] = preg_match('#^([^;]+);? ?(.*)#', $contentType, $matches)
+            ? strtolower($matches[1])
+            : $contentType;
+
+        if (isset($matches[2])) {
+            $parameters = trim($matches[2]);
+            $parameters = preg_split('/; ?/', $parameters);
+
+            foreach ($parameters as $p) {
+                $split = explode('=', $p);
+                $parts[ $split[0] ] = $split[1];
+            }
+        }
+
+        return $parts;
+    }
+
     public static function parseBody(string $method, StreamInterface $body, $contentType = null) 
     {
-        $mime = self::getMime((string) $contentType);
+        $contentType = self::breakContentType($contentType);
+        $mime = $contentType['mime'];
 
         if ($method == 'POST' && in_array($mime, ['application/x-www-form-urlencoded', 'multipart/form-data', ''])) {
             return $_POST;
@@ -81,6 +103,14 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
                 parse_str($contents, $parsed);
                 return $parsed;
                 break;
+            case 'multipart/form-data':
+                return self::parseFormData($contents, $contentType['boundary']);
+                break;
         }
+    }
+
+    public static function parseFormData($string, $boundary) 
+    {
+        $parts = preg_split("/-+$boundary/", $string);
     }
 }
