@@ -32,7 +32,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         $cookieParams    = $_COOKIE;
         $queryParams     = Globals::getQueryVariables();
         $attributes      = []; // ????????????
-        $parsedBody      = self::parseBody($body, $headers['content-type'] ?? null);
+        $parsedBody      = self::parseBody($method, $body, $headers['content-type'] ?? null);
         $uploadedFiles   = UploadedFileFactory::getFilesFromGlobals();
         $serverParams    = $_SERVER;
 
@@ -59,15 +59,15 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
             : $contentType;
     }
 
-    public static function parseBody(StreamInterface $body, $contentType = null) 
+    public static function parseBody(string $method, StreamInterface $body, $contentType = null) 
     {
         $mime = self::getMime((string) $contentType);
 
-        if (in_array($mime, ['application/x-www-form-urlencoded', 'multipart/form-data', ''])) {
+        if ($method == 'POST' && in_array($mime, ['application/x-www-form-urlencoded', 'multipart/form-data', ''])) {
             return $_POST;
         }
 
-        $contents = $body->getContents();
+        $contents = $body->read($_SERVER['CONTENT_LENGTH']);
 
         switch ($contentType) {
             case 'application/json':
@@ -76,6 +76,10 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
             case 'application/xml':
             case 'text/xml':
                 return simplexml_load_string($contents);
+                break;
+            case 'application/x-www-form-urlencoded':
+                parse_str($contents, $parsed);
+                return $parsed;
                 break;
         }
     }
