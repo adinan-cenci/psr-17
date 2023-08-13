@@ -14,25 +14,11 @@ abstract class Globals
         return $matches[1];
     }
 
-    public static function getMethod(array $headers = []) : string
+    public static function getMethod(array $server = []) : string
     {
-        $method = strtoupper($_SERVER['REQUEST_METHOD']);
-
-        if ($method != 'POST') {
-            return $method;
-        }
-
-        if (! isset($headers['x-http-method-override'])) {
-            return $method;
-        }
-
-        $overriden = strtoupper($headers['x-http-method-override']);
-
-        if (in_array($overriden, ['PUT', 'DELETE', 'PATCH', 'HEAD'])) {
-            $method = $overriden;
-        }
-
-        return $method;
+        return isset($server['REQUEST_METHOD'])
+            ? strtoupper($server['REQUEST_METHOD'])
+            : 'GET';
     }
 
     public static function getHeaders() : array
