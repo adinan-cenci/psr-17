@@ -5,8 +5,10 @@ use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 
-use AdinanCenci\Psr17\Helper\Globals;
 use AdinanCenci\Psr7\UploadedFile;
+use AdinanCenci\Psr17\Helper\Globals;
+use AdinanCenci\Psr17\Helper\Input;
+use AdinanCenci\Psr17\Helper\Arrays;
 
 class UploadedFileFactory implements UploadedFileFactoryInterface
 {
@@ -28,8 +30,8 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
         $files = Globals::getUploadedFiles();
 
         foreach ($files as $file) {
-            $inputName = $file['inputName'];
-            $uploadedFiles[$inputName][] = new UploadedFile($file['tmpName'], $file['name'], $file['type'], $file['error'], $file['size']);
+            $uploaded = new UploadedFile($file['tmpName'], $file['name'], $file['type'], $file['error'], $file['size']);
+            Arrays::setValueAtEndOfPath($uploadedFiles, $file['path'], $uploaded);
         }
 
         return $uploadedFiles;

@@ -8,7 +8,11 @@ use Psr\Http\Message\ServerRequestFactoryInterface;
 
 use AdinanCenci\Psr7\ServerRequest;
 use AdinanCenci\Psr7\Stream;
+use AdinanCenci\Psr7\UploadedFile;
 use AdinanCenci\Psr17\Helper\Globals;
+use AdinanCenci\Psr17\Helper\Inputs;
+use AdinanCenci\Psr17\Helper\Headers;
+use AdinanCenci\Psr17\FormData\MultipartFormDataParser;
 
 class ServerRequestFactory implements ServerRequestFactoryInterface 
 {
@@ -27,16 +31,14 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         $headers         = Globals::getHeaders();
         $body            = new Stream(fopen('php://input', 'r'));
         $target          = Globals::getPath();
-        $method          = Globals::getMethod($headers);
+        $method          = Globals::getMethod($_SERVER);
         $uri             = (new UriFactory())->createFromGlobals();
         $cookieParams    = $_COOKIE;
         $queryParams     = Globals::getQueryVariables();
         $attributes      = []; // ????????????
-        $parsedBody      = self::parseBody($body, $headers['content-type'] ?? null);
-        $uploadedFiles   = UploadedFileFactory::getFilesFromGlobals();
         $serverParams    = $_SERVER;
 
-        return new ServerRequest(
+        $request = new ServerRequest(
             $protocolVersion, 
             $headers, 
             $body, 
@@ -46,37 +48,98 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
             $cookieParams, 
             $queryParams, 
             $attributes, 
-            $parsedBody, 
-            $uploadedFiles,
+            null, 
+            [], 
             $serverParams
         );
+
+        $request = $this->parseBody($request);
+
+        return $request;
     }
 
-    public static function getMime(string $contentType) : string
+    public function parseBody(ServerRequestInterface $request) : ServerRequestInterface
     {
-        return preg_match('#^([^;]+)#', $contentType, $matches)
-            ? trim(strtolower($matches[1]))
-            : $contentType;
-    }
+        $contenTypeHeader = $request->getHeader('content-type');
+        $contentType = $contenTypeHeader 
+            ? Headers::parseHeader($contenTypeHeader[0])
+            : '';
 
-    public static function parseBody(StreamInterface $body, $contentType = null) 
-    {
-        $mime = self::getMime((string) $contentType);
+        $mime = isset($contentType['directive']) 
+            ? $contentType['directive']
+            : '';
 
-        if (in_array($mime, ['application/x-www-form-urlencoded', 'multipart/form-data', ''])) {
-            return $_POST;
+        $method = $request->getMethod();
+
+        if ($method == 'POST' && in_array($mime, ['application/x-www-form-urlencoded', 'multipart/form-data', ''])) {
+            $request = $request->withParsedBody($_POST);
+            $request = $request->withUploadedFiles(UploadedFileFactory::getFilesFromGlobals());
+            return $request;
         }
 
-        $contents = $body->getContents();
-
-        switch ($contentType) {
+        switch ($mime) {
             case 'application/json':
-                json_decode($contents);
+                $request = $this->parseJson($request);
                 break;
-            case 'application/xml':
             case 'text/xml':
-                return simplexml_load_string($contents);
+                $request = $this->parseXml($request);
+                break;
+            case 'application/x-www-form-urlencoded':
+                $request = $this->parseUrlEncoded($request);
+                break;
+            case 'multipart/form-data':
+                $request = $this->parseMultipartFormData($request, $contentType['boundary']);
                 break;
         }
+
+        return $request;
+    }
+
+    public function parseJson(ServerRequestInterface $request) : ServerRequestInterface
+    {
+        $json       = $request->getBody()->getContents();
+        $parsedJson = json_decode($json);
+        $request    = $request->withParsedBody($parsedJson);
+        return $request;
+    }
+
+    public function parseXml(ServerRequestInterface $request) : ServerRequestInterface
+    {
+        $xml        = $request->getBody()->getContents();
+        $dom        = simplexml_load_string($xml);
+        $request    = $request->withParsedBody($dom);
+        return $request;
+    }
+
+    public function parseUrlEncoded(ServerRequestInterface $request) : ServerRequestInterface
+    {
+        $string  = $request->getBody()->getContents();
+        parse_str($string, $parsed);
+        $request = $request->withParsedBody($parsed);
+        return $request;
+    }
+
+    public function parseMultipartFormData(ServerRequestInterface $request, string $boundary) : ServerRequestInterface
+    {
+        $body   = $request->getBody();
+        $parser = new MultipartFormDataParser($body, $boundary);
+        $parsed = $parser->parse();
+
+        $variables = [];
+        $uploadedFiles = [];
+
+        foreach ($parsed as $formData) {
+            if ($formData->isFile()) {
+                $uploadedFile = new UploadedFile($formData->file, $formData->filename, $formData->contentType, null, $formData->size);
+                Inputs::insertIntoArray($uploadedFiles, $formData->name, $uploadedFile);
+            } else {
+                Inputs::insertIntoArray($variables, $formData->name, $formData->value);
+            }
+        }
+
+        $request = $request->withParsedBody($variables);
+        $request = $request->withUploadedFiles($uploadedFiles);
+
+        return $request;
     }
 }
