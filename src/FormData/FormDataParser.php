@@ -59,8 +59,9 @@ class FormDataParser
             $lineBreakLenght = 2;
             return $pos;
         }
-        
-        throw new \Exception('fuck this');
+
+        $lineBreakLenght = 0;
+        return strlen($chunk);
     }
 
     protected function readHeaders(string $headers) : void
