@@ -83,17 +83,20 @@ abstract class Globals
         return self::getServerVar('PHP_AUTH_USER');
     }
 
-    public static function getPort() 
-    {
-        $port = self::getServerVar('SERVER_PORT', null);
-        return is_int($port) 
-            ? $port 
-            : null;
-    }
-
     public static function getHost() : string
     {
-        return self::getServerVar('HTTP_HOST', NULL);
+        $host = self::getServerVar('HTTP_X_FORWARDED_HOST', null) ?? self::getServerVar('HTTP_HOST', null);
+        return substr_count($host, ':')
+            ? preg_replace('/:[0-9]+$/', '', $host)
+            : $host;
+    }
+
+    public static function getPort() 
+    {
+        $port = self::getServerVar('HTTP_X_FORWARDED_PORT', null) ?? self::getServerVar('SERVER_PORT', null);
+        return is_numeric($port) 
+            ? $port 
+            : null;
     }
 
     public static function getPath() : string 
