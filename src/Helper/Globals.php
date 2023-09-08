@@ -91,11 +91,11 @@ abstract class Globals
             : $host;
     }
 
-    public static function getPort() 
+    public static function getPort() : ?int
     {
         $port = self::getServerVar('HTTP_X_FORWARDED_PORT', null) ?? self::getServerVar('SERVER_PORT', null);
         return is_numeric($port) 
-            ? $port 
+            ? (int) $port 
             : null;
     }
 
