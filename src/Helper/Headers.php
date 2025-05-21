@@ -1,25 +1,31 @@
-<?php 
+<?php
+
 namespace AdinanCenci\Psr17\Helper;
 
 /**
  * Headers lack standardization, but this crude helper will do for our necessities.
  */
-abstract class Headers 
+abstract class Headers
 {
     /**
+     * Parses a HTTP header.
+     *
      * @param string $header
-     * @return string[] The header as an associative array.
-     * 
+     *   The header, name and value.
+     *
+     * @return string[]
+     *   The header as an associative array.
+     *
      * @example
      *   Headers::parseHeader('Content-Disposition: form-data; name="your_input"; filename="foobar.txt"')
      *   Returns [
-     *     'headerName' => 'Content-Disposition', 
-     *     'directive' => 'form-data', 
-     *     'name' => 'your_input', 
+     *     'headerName' => 'Content-Disposition',
+     *     'directive' => 'form-data',
+     *     'name' => 'your_input',
      *     'filename' => 'foobar.txt'
      *   ]
      */
-    public static function parseHeader(string $header) 
+    public static function parseHeader(string $header)
     {
         $headerName = '';
         $headerValue = $header;

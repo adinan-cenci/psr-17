@@ -1,11 +1,11 @@
 <?php
+
 namespace AdinanCenci\Psr17;
 
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
-
 use AdinanCenci\Psr7\ServerRequest;
 use AdinanCenci\Psr7\Stream;
 use AdinanCenci\Psr7\UploadedFile;
@@ -14,9 +14,12 @@ use AdinanCenci\Psr17\Helper\Inputs;
 use AdinanCenci\Psr17\Helper\Headers;
 use AdinanCenci\Psr17\FormData\MultipartFormDataParser;
 
-class ServerRequestFactory implements ServerRequestFactoryInterface 
+class ServerRequestFactory implements ServerRequestFactoryInterface
 {
-    public function createServerRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface 
+    /**
+     * {@inheritdoc}
+     */
+    public function createServerRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface
     {
         $uri = $uri instanceof UriInterface
             ? $uri
@@ -25,7 +28,13 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         return new ServerRequest('1.0', [], null, '', $method, $uri = null, [], [], [], null, []);
     }
 
-    public function createFromGlobals() : ServerRequestInterface
+    /**
+     * Creates a request object out of PHP global variables.
+     *
+     * @return Psr\Http\Message\ServerRequestInterface
+     *   The new server request object.
+     */
+    public function createFromGlobals(): ServerRequestInterface
     {
         $protocolVersion = Globals::getProtocolVersion();
         $headers         = Globals::getHeaders();
@@ -39,17 +48,17 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         $serverParams    = $_SERVER;
 
         $request = new ServerRequest(
-            $protocolVersion, 
-            $headers, 
-            $body, 
-            $target, 
-            $method, 
-            $uri, 
-            $cookieParams, 
-            $queryParams, 
-            $attributes, 
-            null, 
-            [], 
+            $protocolVersion,
+            $headers,
+            $body,
+            $target,
+            $method,
+            $uri,
+            $cookieParams,
+            $queryParams,
+            $attributes,
+            null,
+            [],
             $serverParams
         );
 
@@ -58,14 +67,23 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         return $request;
     }
 
-    public function parseBody(ServerRequestInterface $request) : ServerRequestInterface
+    /**
+     * Parses the body of the the request.
+     *
+     * @param Psr\Http\Message\ServerRequestInterface $request
+     *   A server request object.
+     *
+     * @return Psr\Http\Message\ServerRequestInterface
+     *   A new request object with the body now parsed.
+     */
+    public function parseBody(ServerRequestInterface $request): ServerRequestInterface
     {
         $contenTypeHeader = $request->getHeader('content-type');
-        $contentType = $contenTypeHeader 
+        $contentType = $contenTypeHeader
             ? Headers::parseHeader($contenTypeHeader[0])
             : '';
 
-        $mime = isset($contentType['directive']) 
+        $mime = isset($contentType['directive'])
             ? $contentType['directive']
             : '';
 
@@ -95,7 +113,16 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         return $request;
     }
 
-    public function parseJson(ServerRequestInterface $request) : ServerRequestInterface
+    /**
+     * Parses the JSON body of the the request.
+     *
+     * @param Psr\Http\Message\ServerRequestInterface $request
+     *   A server request object.
+     *
+     * @return Psr\Http\Message\ServerRequestInterface
+     *   A new request object with the body now parsed.
+     */
+    public function parseJson(ServerRequestInterface $request): ServerRequestInterface
     {
         $json       = $request->getBody()->getContents();
         $parsedJson = json_decode($json);
@@ -103,7 +130,16 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         return $request;
     }
 
-    public function parseXml(ServerRequestInterface $request) : ServerRequestInterface
+    /**
+     * Parses the XML body of the the request.
+     *
+     * @param Psr\Http\Message\ServerRequestInterface $request
+     *   A server request object.
+     *
+     * @return Psr\Http\Message\ServerRequestInterface
+     *   A new request object with the body now parsed.
+     */
+    public function parseXml(ServerRequestInterface $request): ServerRequestInterface
     {
         $xml        = $request->getBody()->getContents();
         $dom        = simplexml_load_string($xml);
@@ -111,7 +147,16 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         return $request;
     }
 
-    public function parseUrlEncoded(ServerRequestInterface $request) : ServerRequestInterface
+    /**
+     * Parses the URL encoded body of the the request.
+     *
+     * @param Psr\Http\Message\ServerRequestInterface $request
+     *   A server request object.
+     *
+     * @return Psr\Http\Message\ServerRequestInterface
+     *   A new request object with the body now parsed.
+     */
+    public function parseUrlEncoded(ServerRequestInterface $request): ServerRequestInterface
     {
         $string  = $request->getBody()->getContents();
         parse_str($string, $parsed);
@@ -119,7 +164,18 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         return $request;
     }
 
-    public function parseMultipartFormData(ServerRequestInterface $request, string $boundary) : ServerRequestInterface
+    /**
+     * Parses the multipart form data body of the the request.
+     *
+     * @param Psr\Http\Message\ServerRequestInterface $request
+     *   A server request object.
+     * @param string $boundary
+     *   The string that separates data in the body.
+     *
+     * @return Psr\Http\Message\ServerRequestInterface
+     *   A new request object with the body now parsed.
+     */
+    public function parseMultipartFormData(ServerRequestInterface $request, string $boundary): ServerRequestInterface
     {
         $body   = $request->getBody();
         $parser = new MultipartFormDataParser($body, $boundary);
@@ -130,7 +186,13 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 
         foreach ($parsed as $formData) {
             if ($formData->isFile()) {
-                $uploadedFile = new UploadedFile($formData->file, $formData->filename, $formData->contentType, null, $formData->size);
+                $uploadedFile = new UploadedFile(
+                    $formData->file,
+                    $formData->filename,
+                    $formData->contentType,
+                    null,
+                    $formData->size
+                );
                 Inputs::insertIntoArray($uploadedFiles, $formData->name, $uploadedFile);
             } else {
                 Inputs::insertIntoArray($variables, $formData->name, $formData->value);
