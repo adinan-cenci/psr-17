@@ -148,6 +148,22 @@ class ResponseFactory implements ResponseFactoryInterface
     }
 
     /**
+     * Creates a generic 307 type response.
+     *
+     * Not part of the PSR-17, just a helpful method.
+     *
+     * @param string|Psr\Http\Message\UriInterface $location
+     *   The location to redirect the user to.
+     *
+     * @return Psr\Http\Message\ResponseInterface
+     *   The new response object.
+     */
+    public function temporaryRedirect($location): ResponseInterface
+    {
+        return $this->moved(307, 'Temporary Redirect', $location);
+    }
+
+    /**
      * Creates a generic 400 type response.
      *
      * Not part of the PSR-17, just a helpful method.
