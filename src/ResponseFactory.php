@@ -260,6 +260,22 @@ class ResponseFactory implements ResponseFactoryInterface
     }
 
     /**
+     * Creates a generic 405 type response.
+     *
+     * Not part of the PSR-17, just a helpful method.
+     *
+     * @param string|Psr\Http\Message\StreamInterface $body
+     *   The body of the response.
+     *
+     * @return Psr\Http\Message\ResponseInterface
+     *   The new response object.
+     */
+    public function methodNotAllowed($body = ''): ResponseInterface
+    {
+        return $this->response(405, 'Method Not Allowed', $body);
+    }
+
+    /**
      * Creates a generic 500 type response.
      *
      * Not part of the PSR-17, just a helpful method.
