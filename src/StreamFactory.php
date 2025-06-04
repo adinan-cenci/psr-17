@@ -16,6 +16,7 @@ class StreamFactory implements StreamFactoryInterface
         $resource = fopen('php://memory', 'r+');
         $stream = $this->createStreamFromResource($resource);
         $stream->write($content);
+        $stream->rewind(0);
 
         return $stream;
     }
