@@ -95,18 +95,18 @@ class FormData
     }
 
     /**
-     * Append data to the value.
+     * concatenate a string to our data.
      *
-     * @param string $value
-     *   The data to be added.
+     * @param string $string
+     *   The string to be added.
      */
-    public function addValue($value)
+    public function concat($string)
     {
         if ($this->isFile()) {
-            fwrite($this->file, $value);
-            $this->size += strlen($value);
+            fwrite($this->file, $string);
+            $this->size += strlen($string);
         } else {
-            $this->value .= $value;
+            $this->value .= $string;
         }
     }
 

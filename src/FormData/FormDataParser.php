@@ -35,7 +35,7 @@ class FormDataParser
     }
 
     /**
-     * Adds a chunk to the data we will be parsing.
+     * Adds a chunk to the data we are reading.
      *
      * @param string $chunk
      *   Data read from the request's body.
@@ -53,7 +53,7 @@ class FormDataParser
             $this->headersParsed = true;
         }
 
-        $this->formData->addValue($chunk);
+        $this->formData->concat($chunk);
     }
 
     /**

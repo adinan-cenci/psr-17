@@ -117,7 +117,7 @@ class MultipartFormDataParser
     }
 
     /**
-     * Adds a string to the current chunk.
+     * Adds a string to the current form data parser.
      *
      * @param string $chunk
      *   Chunk of data.
