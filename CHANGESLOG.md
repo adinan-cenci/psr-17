@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## 2.0.0 - 2025-06-04
+### Fixed
+- [issue 11](https://github.com/adinan-cenci/psr-17/issues/11) - PSR-12 compliance and documentation.
+- [issue 13](https://github.com/adinan-cenci/psr-17/issues/13) - A bug when reading json/xml requests.
+
+### Changed
+- [issue 13](https://github.com/adinan-cenci/psr-17/issues/13) - Updated dependencies, increased unit-test coverage and improved readability.
+
+---
+
 ## 1.0.8 - 2023-09-08
 ### Fixed
 - [issue 9](https://github.com/adinan-cenci/psr-17/issues/9) - Messed up the previous patch.
