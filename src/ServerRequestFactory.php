@@ -191,7 +191,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
                     $formData->file,
                     $formData->filename,
                     $formData->contentType,
-                    null,
+                    0,
                     $formData->size
                 );
                 Inputs::insertIntoArray($uploadedFiles, $formData->name, $uploadedFile);
