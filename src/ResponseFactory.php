@@ -276,6 +276,22 @@ class ResponseFactory implements ResponseFactoryInterface
     }
 
     /**
+     * Creates a generic 406 type response.
+     *
+     * Not part of the PSR-17, just a helpful method.
+     *
+     * @param string|Psr\Http\Message\StreamInterface $body
+     *   The body of the response.
+     *
+     * @return Psr\Http\Message\ResponseInterface
+     *   The new response object.
+     */
+    public function notAcceptable($body = ''): ResponseInterface
+    {
+        return $this->response(406, 'Not Acceptable', $body);
+    }
+
+    /**
      * Creates a generic 500 type response.
      *
      * Not part of the PSR-17, just a helpful method.
