@@ -8,6 +8,7 @@ use AdinanCenci\Psr17\StreamFactory;
 use AdinanCenci\Psr17\UriFactory;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UploadedFileInterface;
 
 class ServerRequestFactoryTest extends TestCase
 {
@@ -55,6 +56,7 @@ class ServerRequestFactoryTest extends TestCase
         $request = $factory->parseBody($request);
 
         $postData = $request->getParsedBody();
+        $uploadedFiles = $request->getUploadedFiles();
 
         $this->assertEquals([
             'party_name' => 'The Fellowship of the Ring',
@@ -72,5 +74,8 @@ class ServerRequestFactoryTest extends TestCase
                 ]
             ]
         ], $postData);
+
+        $this->assertInstanceOf(UploadedFileInterface::class, $uploadedFiles['enemies']['final_boss']);
+        $this->assertEquals('sauron.jpg', $uploadedFiles['enemies']['final_boss']->getClientFilename());
     }
 }
