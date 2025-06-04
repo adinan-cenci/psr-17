@@ -2,7 +2,7 @@
 
 This is an implementation of the [PSR-17](https://www.php-fig.org/psr/psr-17/) specification.
 
-Besides the psr methods, the factories also include some useful methods:
+Besides the psr methods, the factories also include some useful ones:
 
 ### ResponseFactory
 
@@ -11,7 +11,7 @@ use AdinanCenci\Psr17\ResponseFactory;
 
 $responseFactory = new ResponseFactory();
 
-// Returns an instance of Psr\Http\Message\ResponseInterface with 
+// Returns an instance of Psr\Http\Message\ResponseInterface with
 // code 200
 $factory->ok('your body here');
 

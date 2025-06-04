@@ -1,17 +1,51 @@
-<?php 
+<?php
+
 namespace AdinanCenci\Psr17\FormData;
 
 use Psr\Http\Message\StreamInterface;
 
-class MultipartFormDataParser 
+/**
+ * Parses a multipart-form-data stream into comprehensive information.
+ */
+class MultipartFormDataParser
 {
+    /**
+     * The request's body.
+     *
+     * @var Psr\Http\Message\StreamInterface
+     */
     protected StreamInterface $stream;
+
+    /**
+     * @var string
+     *
+     * The boundary that separates the different parts of the data.
+     */
     protected string $boundary;
 
+    /**
+     * The parsed data.
+     *
+     * @var AdinanCenci\Psr17\FormData\FormData[]
+     */
     protected array $parts = [];
+
+    /**
+     * The current part we are working with.
+     *
+     * @var AdinanCenci\Psr17\FormData\FormData
+     */
     protected $currentPart = null;
 
-    public function __construct(StreamInterface $stream, string $boundary) 
+    /**
+     * Constructor.
+     *
+     * @param Psr\Http\Message\StreamInterface $stream
+     *   The request's body.
+     * @param string $boundary
+     *   The boundary that separates the different parts of the data.
+     */
+    public function __construct(StreamInterface $stream, string $boundary)
     {
         $this->stream   = $stream;
         $this->boundary = $boundary;
@@ -19,9 +53,12 @@ class MultipartFormDataParser
     }
 
     /**
-     * @return []FormData
+     * Parses the data and returns it.
+     *
+     * @return AdinanCenci\Psr17\FormData\FormData[]
+     *   The parsed data.
      */
-    public function parse() : array
+    public function parse(): array
     {
         $chunkSize   = 8192;
         $pointer     = 0;
@@ -40,10 +77,11 @@ class MultipartFormDataParser
             $chunkLength      = strlen($chunk);
             $boundaryPosition = $this->lookForBoundaryLine($chunk, $this->boundary, $boundaryLineLenght);
 
-            // It is possible for the chunk's end to land on top of the boundary's 
-            // thus failing to detect it. So we read just a bit further, just to make sure.
+            // It is possible for the chunk's end to land on top of the
+            // boundary's thus failing to detect it. So we read just a bit
+            // further, just to make sure.
             if ($boundaryPosition == -1) {
-                $aBitMore          = $this->stream->read( $this->boundaryLength * 2 );
+                $aBitMore          = $this->stream->read($this->boundaryLength * 2);
                 $chunk            .= $aBitMore;
                 $chunkLength      += strlen($aBitMore);
                 $boundaryPosition  = $this->lookForBoundaryLine($chunk, $this->boundary, $boundaryLineLenght);
@@ -78,27 +116,60 @@ class MultipartFormDataParser
         return $formData;
     }
 
-    protected function addChunk(string $chunk) : void 
+    /**
+     * Adds a string to the current form data parser.
+     *
+     * @param string $chunk
+     *   Chunk of data.
+     */
+    protected function addChunk(string $chunk): void
     {
         $currentPart = $this->getCurrentPart();
         $currentPart->addChunk($chunk);
     }
 
-    protected function getCurrentPart() : FormDataParser
+    /**
+     * Returns the current part we are working with.
+     *
+     * @return AdinanCenci\Psr17\FormData\FormDataParser
+     *   The current data parser.
+     */
+    protected function getCurrentPart(): FormDataParser
     {
-        return $this->currentPart = $this->currentPart 
+        $this->currentPart = $this->currentPart
             ? $this->currentPart
             : $this->newPart();
+
+        return $this->currentPart;
     }
 
-    protected function newPart() : FormDataParser
+    /**
+     * Adds a new data parser to the list and returns it.
+     *
+     * @return AdinanCenci\Psr17\FormData\FormDataParser
+     *   The new part.
+     */
+    protected function newPart(): FormDataParser
     {
         $newPart = new FormDataParser();
         $this->parts[] = $this->currentPart = $newPart;
         return $newPart;
     }
 
-    protected function lookForBoundaryLine(string $chunk, string $boundary, &$boundaryLineLenght = 0) : int
+    /**
+     * Looks for the boundary withing a string.
+     *
+     * @param string $chunk
+     *   Chunk of data to look into.
+     * @param string $boundary
+     *   The boundary.
+     * @param int $boundaryLineLenght
+     *   It will return the length of the line where the boundary can be found.
+     *
+     * @return int
+     *   The position in the $chunk where the boundary begins.
+     */
+    protected function lookForBoundaryLine(string $chunk, string $boundary, &$boundaryLineLenght = 0): int
     {
         $regex = "/[\r\n]*-*$this->boundary-*[\r\n]*/";
         if (preg_match($regex, $chunk, $matches, \PREG_OFFSET_CAPTURE)) {
@@ -110,5 +181,3 @@ class MultipartFormDataParser
         return -1;
     }
 }
-
-
