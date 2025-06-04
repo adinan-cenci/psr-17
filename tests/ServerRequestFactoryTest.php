@@ -25,16 +25,19 @@ class ServerRequestFactoryTest extends TestCase
 
     public function testParseMultipartFormData()
     {
-        $uriFactory = new UriFactory();
-        $uri = $uriFactory->createUri('https://mytest.com/');
+        $file     = './tests/files/multipart-form-data.txt';
+        $boundary = '----WebKitFormBoundaryTNvOF5ccQEMLOAA3';
 
+        $uriFactory = new UriFactory();
         $streamFactory = new StreamFactory();
-        $body = $streamFactory->createStreamFromFile('./tests/files/multipart-form-data.txt');
+
+        $uri  = $uriFactory->createUri('https://mytest.com/');
+        $body = $streamFactory->createStreamFromFile($file);
 
         $request = new ServerRequest(
             '1.1',
             [
-                'Content-type' => 'multipart/form-data; boundary=----WebKitFormBoundaryTNvOF5ccQEMLOAA3',
+                'Content-type' => 'multipart/form-data; boundary=' . $boundary,
             ],
             $body,
             '/',
@@ -50,5 +53,24 @@ class ServerRequestFactoryTest extends TestCase
 
         $factory = $this->getFactory();
         $request = $factory->parseBody($request);
+
+        $postData = $request->getParsedBody();
+
+        $this->assertEquals([
+            'party_name' => 'The Fellowship of the Ring',
+            'foundation' => 'Rivendell',
+            'members' => [
+                'wizard' => 'Gandalf',
+                'ranger' => 'Aragorn',
+                'warrior' => 'Boromir',
+                'tank' => 'Gimli',
+                'halfling' => [
+                    'Samwise Gamgee',
+                    'Frodo Baggins',
+                    'Pippin Took',
+                    'Merry Brandybuck',
+                ]
+            ]
+        ], $postData);
     }
 }
