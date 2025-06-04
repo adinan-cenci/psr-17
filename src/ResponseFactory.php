@@ -116,6 +116,22 @@ class ResponseFactory implements ResponseFactoryInterface
     }
 
     /**
+     * Creates a generic 303 type response.
+     *
+     * Not part of the PSR-17, just a helpful method.
+     *
+     * @param string|Psr\Http\Message\UriInterface $location
+     *   The location to redirect the user to.
+     *
+     * @return Psr\Http\Message\ResponseInterface
+     *   The new response object.
+     */
+    public function seeOther($location): ResponseInterface
+    {
+        return $this->moved(303, 'See Other', $location);
+    }
+
+    /**
      * Creates a generic 400 type response.
      *
      * Not part of the PSR-17, just a helpful method.
