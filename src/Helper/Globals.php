@@ -24,16 +24,13 @@ abstract class Globals
     /**
      * Returns the HTTP method for the current request.
      *
-     * @param $server
-     *   The server array.
-     *
      * @return string
      *   The HTTP method.
      */
-    public static function getMethod(array $server = []): string
+    public static function getMethod(): string
     {
-        return isset($server['REQUEST_METHOD'])
-            ? strtoupper($server['REQUEST_METHOD'])
+        return isset($_SERVER['REQUEST_METHOD'])
+            ? strtoupper($_SERVER['REQUEST_METHOD'])
             : 'GET';
     }
 
