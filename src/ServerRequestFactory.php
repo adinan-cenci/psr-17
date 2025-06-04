@@ -21,11 +21,12 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
      */
     public function createServerRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface
     {
-        $uri = $uri instanceof UriInterface
-            ? $uri
-            : (new UriFactory())->createUri($uri);
+        if (!$uri instanceof UriInterface) {
+            $factory = new UriFactory();
+            $uri = $factory->createUri($uri);
+        }
 
-        return new ServerRequest('1.0', [], null, '', $method, $uri = null, [], [], [], null, []);
+        return new ServerRequest('1.0', [], null, '', $method, $uri, [], [], [], null, []);
     }
 
     /**
