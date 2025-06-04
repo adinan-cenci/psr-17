@@ -212,6 +212,22 @@ class ResponseFactory implements ResponseFactoryInterface
     }
 
     /**
+     * Creates a generic 402 type response.
+     *
+     * Not part of the PSR-17, just a helpful method.
+     *
+     * @param string|Psr\Http\Message\StreamInterface $body
+     *   The body of the response.
+     *
+     * @return Psr\Http\Message\ResponseInterface
+     *   The new response object.
+     */
+    public function paymentRequired($body = ''): ResponseInterface
+    {
+        return $this->response(402, 'Payment Required', $body);
+    }
+
+    /**
      * Creates a generic 403 type response.
      *
      * Not part of the PSR-17, just a helpful method.
