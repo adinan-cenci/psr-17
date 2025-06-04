@@ -132,6 +132,22 @@ class ResponseFactory implements ResponseFactoryInterface
     }
 
     /**
+     * Creates a generic 304 type response.
+     *
+     * Not part of the PSR-17, just a helpful method.
+     *
+     * @param string|Psr\Http\Message\UriInterface $location
+     *   The location to redirect the user to.
+     *
+     * @return Psr\Http\Message\ResponseInterface
+     *   The new response object.
+     */
+    public function notModified($location): ResponseInterface
+    {
+        return $this->moved(304, 'Not Modified', $location);
+    }
+
+    /**
      * Creates a generic 400 type response.
      *
      * Not part of the PSR-17, just a helpful method.
