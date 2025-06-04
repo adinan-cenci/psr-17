@@ -41,11 +41,12 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         $headers         = Globals::getHeaders();
         $body            = new Stream(fopen('php://input', 'r'));
         $target          = Globals::getPath();
-        $method          = Globals::getMethod($_SERVER);
-        $uri             = (new UriFactory())->createFromGlobals();
+        $method          = Globals::getMethod();
+        $uriFactory      = new UriFactory();
+        $uri             = $uriFactory->createFromGlobals();
         $cookieParams    = $_COOKIE;
         $queryParams     = Globals::getQueryVariables();
-        $attributes      = []; // ????????????
+        $attributes      = [];
         $serverParams    = $_SERVER;
 
         $request = new ServerRequest(
