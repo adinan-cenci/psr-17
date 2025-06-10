@@ -72,7 +72,7 @@ class MultipartFormDataParser
         $beginning    = $this->stream->read(150);
         $position = $this->lookForBoundaryLine($beginning, $this->boundary, $boundaryLineLenght);
         if ($position == -1) {
-            throw new \InvalidArgumentException('Boundary not found withing the data.');
+            throw new \InvalidArgumentException('Boundary not found within the data.');
         }
 
         // Move the pointer to the first part.
