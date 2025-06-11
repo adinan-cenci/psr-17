@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "adinan-cenci/psr-7",
-            "version": "v2.0.0",
+            "version": "v2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/adinan-cenci/psr-7.git",
-                "reference": "5c9920b34498c86928213fe96dc725233c540309"
+                "reference": "d510a6c16f08809a187ec7328a7de8232d976feb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/adinan-cenci/psr-7/zipball/5c9920b34498c86928213fe96dc725233c540309",
-                "reference": "5c9920b34498c86928213fe96dc725233c540309",
+                "url": "https://api.github.com/repos/adinan-cenci/psr-7/zipball/d510a6c16f08809a187ec7328a7de8232d976feb",
+                "reference": "d510a6c16f08809a187ec7328a7de8232d976feb",
                 "shasum": ""
             },
             "require": {
@@ -49,10 +49,10 @@
                 "psr-7"
             ],
             "support": {
-                "source": "https://github.com/adinan-cenci/psr-7/tree/v2.0.0",
+                "source": "https://github.com/adinan-cenci/psr-7/tree/v2.0.1",
                 "issues": "https://github.com/adinan-cenci/psr-7/issues"
             },
-            "time": "2025-05-20T21:22:31+00:00"
+            "time": "2025-06-11T00:00:21+00:00"
         },
         {
             "name": "psr/http-factory",

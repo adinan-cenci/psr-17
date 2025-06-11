@@ -3,6 +3,7 @@
 namespace AdinanCenci\Psr17\Tests;
 
 use AdinanCenci\Psr7\ServerRequest;
+use AdinanCenci\Psr17\Exception\MalformedRequestBody;
 use AdinanCenci\Psr17\ServerRequestFactory;
 use AdinanCenci\Psr17\StreamFactory;
 use AdinanCenci\Psr17\UriFactory;
@@ -156,5 +157,156 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertEquals('The Fellowship of the Ring', $postData->book[0]);
         $this->assertEquals('The Two Towers', $postData->book[1]);
         $this->assertEquals('The Return of the King', $postData->book[2]);
+    }
+
+    public function testMalformedMultiPartRequestWithNoBoundary()
+    {
+        $file     = './tests/files/multipart-form-data.txt';
+
+        $uriFactory = new UriFactory();
+        $streamFactory = new StreamFactory();
+
+        $uri  = $uriFactory->createUri('https://mytest.com/');
+        $body = $streamFactory->createStreamFromFile($file);
+
+        $request = new ServerRequest(
+            '1.1',
+            [
+                'Content-type' => 'multipart/form-data',
+            ],
+            $body,
+            '/',
+            'PUT',
+            $uri,
+            [],
+            [],
+            [],
+            null,
+            [],
+            []
+        );
+
+        $factory = $this->getFactory();
+
+        try {
+            $request = $factory->parseBody($request);
+        } catch (\Exception $e) {
+            $this->assertInstanceOf(MalformedRequestBody::class, $e);
+        }
+    }
+
+    public function testMalformedMultiPartRequestWithNonMatchingBoundary()
+    {
+        $file     = './tests/files/multipart-form-data.txt';
+        $boundary = '----random-nonsense';
+
+        $uriFactory = new UriFactory();
+        $streamFactory = new StreamFactory();
+
+        $uri  = $uriFactory->createUri('https://mytest.com/');
+        $body = $streamFactory->createStreamFromFile($file);
+
+        $request = new ServerRequest(
+            '1.1',
+            [
+                'Content-type' => 'multipart/form-data; boundary=' . $boundary,
+            ],
+            $body,
+            '/',
+            'PUT',
+            $uri,
+            [],
+            [],
+            [],
+            null,
+            [],
+            []
+        );
+
+        $factory = $this->getFactory();
+
+        try {
+            $request = $factory->parseBody($request);
+        } catch (\Exception $e) {
+            $this->assertInstanceOf(MalformedRequestBody::class, $e);
+        }
+    }
+
+    public function testMalformedRequestWithInvalidJson()
+    {
+        $json = '{"data":Wait a minute, this is not a valid JSON string, this is a...';
+
+        $uriFactory = new UriFactory();
+        $streamFactory = new StreamFactory();
+
+        $uri  = $uriFactory->createUri('https://mytest.com/file.json');
+        $body = $streamFactory->createStream($json);
+
+        $request = new ServerRequest(
+            '1.1',
+            [
+                'Content-type' => 'application/json',
+            ],
+            $body,
+            '/',
+            'PUT',
+            $uri,
+            [],
+            [],
+            [],
+            null,
+            [],
+            []
+        );
+
+        $factory = $this->getFactory();
+
+        try {
+            $request = $factory->parseBody($request);
+        } catch (\Exception $e) {
+            $this->assertInstanceOf(MalformedRequestBody::class, $e);
+        }
+    }
+
+    public function testMalformedRequestWithInvalidXml()
+    {
+        $xml = '<?xml version="1.0" encoding="utf-8"?>
+        <xml is a </programming language>';
+
+        $uriFactory = new UriFactory();
+        $streamFactory = new StreamFactory();
+
+        $uri  = $uriFactory->createUri('https://mytest.com/file.json');
+        $body = $streamFactory->createStream($xml);
+
+        $request = new ServerRequest(
+            '1.1',
+            [
+                'Content-type' => 'text/xml',
+            ],
+            $body,
+            '/',
+            'PUT',
+            $uri,
+            [],
+            [],
+            [],
+            null,
+            [],
+            []
+        );
+
+        $factory = $this->getFactory();
+
+        try {
+            $request = $factory->parseBody($request);
+        } catch (\Exception $e) {
+            $this->assertInstanceOf(MalformedRequestBody::class, $e);
+        }
+
+        $nErrors = count(libxml_get_errors());
+        libxml_clear_errors();
+
+        $this->assertTrue($nErrors > 0);
     }
 }

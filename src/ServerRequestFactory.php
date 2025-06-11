@@ -9,6 +9,7 @@ use Psr\Http\Message\ServerRequestFactoryInterface;
 use AdinanCenci\Psr7\ServerRequest;
 use AdinanCenci\Psr7\Stream;
 use AdinanCenci\Psr7\UploadedFile;
+use AdinanCenci\Psr17\Exception\MalformedRequestBody;
 use AdinanCenci\Psr17\Helper\Globals;
 use AdinanCenci\Psr17\Helper\Inputs;
 use AdinanCenci\Psr17\Helper\Headers;
@@ -97,19 +98,24 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
             return $request;
         }
 
-        switch ($mime) {
-            case 'application/json':
-                $request = $this->parseJson($request);
-                break;
-            case 'text/xml':
-                $request = $this->parseXml($request);
-                break;
-            case 'application/x-www-form-urlencoded':
-                $request = $this->parseUrlEncoded($request);
-                break;
-            case 'multipart/form-data':
-                $request = $this->parseMultipartFormData($request, $contentType['boundary']);
-                break;
+        try {
+            switch ($mime) {
+                case 'application/json':
+                    $request = $this->parseJson($request);
+                    break;
+                case 'text/xml':
+                    $request = $this->parseXml($request);
+                    break;
+                case 'application/x-www-form-urlencoded':
+                    $request = $this->parseUrlEncoded($request);
+                    break;
+                case 'multipart/form-data':
+                    $boundary = $contentType['boundary'] ?? '';
+                    $request = $this->parseMultipartFormData($request, $boundary);
+                    break;
+            }
+        } catch (\Exception $e) {
+            throw new MalformedRequestBody($e->getMessage(), 0, null, $request);
         }
 
         return $request;
@@ -128,6 +134,11 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
     {
         $json       = $request->getBody()->getContents();
         $parsedJson = json_decode($json);
+
+        if (is_null($parsedJson) && $json != 'null') {
+            throw new \InvalidArgumentException('An error occured while parsing the json body. Error code: ' . json_last_error());
+        }
+
         $request    = $request->withParsedBody($parsedJson);
         return $request;
     }
@@ -144,7 +155,14 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
     public function parseXml(ServerRequestInterface $request): ServerRequestInterface
     {
         $xml        = $request->getBody()->getContents();
+        $previous   = libxml_use_internal_errors(true);
         $dom        = simplexml_load_string($xml);
+
+        if ($dom == false) {
+            throw new \Exception('An error occured while parsing the XML body');
+        }
+
+        libxml_use_internal_errors($previous);
         $request    = $request->withParsedBody($dom);
         return $request;
     }

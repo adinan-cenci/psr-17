@@ -47,6 +47,10 @@ class MultipartFormDataParser
      */
     public function __construct(StreamInterface $stream, string $boundary)
     {
+        if (!$boundary) {
+            throw new \InvalidArgumentException('Invalid boundary');
+        }
+
         $this->stream   = $stream;
         $this->boundary = $boundary;
         $this->boundaryLength = strlen($boundary);
@@ -66,7 +70,11 @@ class MultipartFormDataParser
         // Read the first line with the boundary.
         $this->stream->seek(0);
         $beginning    = $this->stream->read(150);
-        $this->lookForBoundaryLine($beginning, $this->boundary, $boundaryLineLenght);
+        $position = $this->lookForBoundaryLine($beginning, $this->boundary, $boundaryLineLenght);
+        if ($position == -1) {
+            throw new \InvalidArgumentException('Boundary not found within the data.');
+        }
+
         // Move the pointer to the first part.
         $this->stream->seek($boundaryLineLenght);
         $pointer      = $boundaryLineLenght;
