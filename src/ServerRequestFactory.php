@@ -98,6 +98,10 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
             return $request;
         }
 
+        if (!in_array($method, ['POST', 'PUT', 'PATCH'])) {
+            return $request;
+        }
+
         try {
             switch ($mime) {
                 case 'application/json':

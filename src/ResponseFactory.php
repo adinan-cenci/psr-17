@@ -368,7 +368,7 @@ class ResponseFactory implements ResponseFactoryInterface
      * @return Psr\Http\Message\ResponseInterface
      *   The new response object.
      */
-    protected function response(int $code, string $reasonPhrase, $body = ''): ResponseInterface
+    public function response(int $code, string $reasonPhrase, $body = ''): ResponseInterface
     {
         $response = $this->createResponse($code, $reasonPhrase);
 
