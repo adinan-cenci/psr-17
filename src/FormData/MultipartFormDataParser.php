@@ -38,6 +38,13 @@ class MultipartFormDataParser
     protected $currentPart = null;
 
     /**
+     * The length of the boundary string.
+     *
+     * @var int
+     */
+    protected int $boundaryLength;
+
+    /**
      * Constructor.
      *
      * @param Psr\Http\Message\StreamInterface $stream
